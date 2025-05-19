@@ -1,0 +1,85 @@
+﻿@page "/asignaturas"
+@rendermode InteractiveServer
+@inject NavigationManager _navigationManager
+@inject IRepositorioAsignaturas _repositorioasignaturas
+
+<PageTitle>Asignaturas</PageTitle>
+<h1>Asignaturas</h1>
+
+<a class="btn btn-success mt-4" href="asignatura/nueva">Nueva Asignatura</a>
+
+@if (_asignaturas == null)
+{
+    <p class="mt-4"><em>Cargando ... </em></p>
+}
+else if (_asignaturas.Count() == 0)
+{
+    <p class="mt-4"><em>No hay asignaturas registradas</em></p>
+}
+else
+{
+    <p class="mt-4">Hay <strong>@_asignaturas.Count()</strong> asignaturas registradas</p>
+    <br />
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Horario</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Asignatura value in _asignaturas)
+            {
+                <tr>
+                    <td>@value!.Nombre</td>
+                    <td>@value.Horario</td>
+                    <td>
+                        <button class="btn btn-sm" @onclick="()=>Editar(value.Id)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                            </svg>
+                        </button>
+
+                        <button class="btn btn-sm" @onclick="()=>Eliminar(value)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-trash3" viewBox="0 0 16 16">
+                                <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Asignatura?> _asignaturas = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _asignaturas = await _repositorioasignaturas.GetAll();
+    }
+
+    /*
+	protected override void OnInitialized()
+    {
+		_asignaturas = new List<Asignatura>
+		{
+			new Asignatura { Id = 1, Nombre = "Matemáticas", Horario = "Lunes 8:00 - 10:00" },
+			new Asignatura { Id = 2, Nombre = "Historia", Horario = "Martes 10:00 - 12:00" },
+			new Asignatura { Id = 3, Nombre = "Ciencias", Horario = "Miércoles 14:00 - 16:00" }
+		};
+    }
+    */
+
+    private async Task Eliminar(Asignatura asignatura)
+    {
+        await _repositorioasignaturas.Delete(asignatura.Id);
+        _asignaturas!.Remove(asignatura);
+    }
+
+    private void Editar(int id)
+    {
+        _navigationManager.NavigateTo($"/asignatura/editar/{id}");
+    } 
+}	
