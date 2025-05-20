@@ -10,6 +10,8 @@ builder.Services.AddDbContext<BasedeDatosDbContext>(options => options.UseSqlSer
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddScoped<IRepositorioAsignaturas, RepositorioAsignaturas>();
+builder.Services.AddScoped<IRepositorioAulas, RepositorioAulas>();
+builder.Services.AddScoped<IRepositorioProfesores, RepositorioProfesores>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

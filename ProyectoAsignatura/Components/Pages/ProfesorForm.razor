@@ -1,0 +1,73 @@
+﻿@page "/profesor/nueva"
+@page "/profesor/editar/{Id:int}"
+@rendermode InteractiveServer
+@inject NavigationManager _navigationManager
+@inject IRepositorioProfesores _repositorioprofesores
+
+<PageTitle>@_mensaje Profesor</PageTitle>
+<h3>@_mensaje Profesor</h3>
+
+<EditForm Model="_profesor" FormName="frmProfesor" OnValidSubmit="Guardar">
+	<DataAnnotationsValidator />
+	<div class="mb-3 row">
+		<label for="txtNombre" class="col-sm-2 col-form-label">Nombre</label>
+		<div class="col-sm-10">
+			<InputText @bind-Value="_profesor.Nombre" class="form-control" id="txtNombre" />
+			<ValidationMessage For="()=>_profesor.Nombre" />
+		</div>
+	</div>
+	<div class="mb-3 row">
+		<label for="txtCorreo" class="col-sm-2 col-form-label">Correo</label>
+		<div class="col-sm-10">
+			<InputText @bind-Value="_profesor.Correo" class="form-control" id="txtCorreo" />
+			<ValidationMessage For="()=>_profesor.Correo" />
+		</div>
+	</div>
+	<div class="mb-3 row">
+		<label for="txtTelefono" class="col-sm-2 col-form-label">Teléfono</label>
+		<div class="col-sm-10">
+			<InputNumber @bind-Value="_profesor.Teléfono" class="form-control" id="txtTelefono" />
+			<ValidationMessage For="()=>_profesor.Teléfono" />
+		</div>
+	</div>
+	<button type="submit" class="btn btn-primary">Guardar</button>
+	<button class="btn btn-danger ms-3" @onclick="Cancelar" @onclick:preventDefault>Cancelar</button>
+</EditForm>
+
+@code {
+	[Parameter]
+	public int Id { get; set; }
+	private Profesor? _profesor = new();
+	private string _mensaje = "Nueva";
+	private List<Profesor> _profesores = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (Id > 0)
+		{
+			_mensaje = "Editar ";
+			_profesor = await _repositorioprofesores.Get(Id);
+		}
+	}
+
+	private void Cancelar()
+	{
+		_navigationManager.NavigateTo("/aulas");
+	}
+
+	private async Task Guardar()
+	{
+		if (Id > 0)
+		{
+			await _repositorioprofesores.Update(Id, _profesor!);
+		}
+		else
+		{
+			await _repositorioprofesores.Add(_profesor!);
+		}
+		Cancelar();
+	}
+}
+
+
+

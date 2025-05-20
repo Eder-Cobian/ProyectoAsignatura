@@ -1,43 +1,39 @@
-﻿@page "/asignaturas"
+﻿@page "/aulas"
 @rendermode InteractiveServer
 @inject NavigationManager _navigationManager
-@inject IRepositorioAsignaturas _repositorioasignaturas
+@inject IRepositorioAulas _repositorioaulas
 
-<PageTitle>Asignaturas</PageTitle>
-<h1>Asignaturas</h1>
+<PageTitle>Aulas</PageTitle>
+<h1>Aulas</h1>
 
-<a class="btn btn-success mt-4" href="asignatura/nueva">Nueva Asignatura</a>
+<a class="btn btn-success mt-4" href="aula/nueva">Nueva Aula</a>
 
-@if (_asignaturas == null)
+@if (_aulas == null)
 {
     <p class="mt-4"><em>Cargando ... </em></p>
 }
-else if (_asignaturas.Count() == 0)
+else if (_aulas.Count() == 0)
 {
-    <p class="mt-4"><em>No hay asignaturas registradas</em></p>
+    <p class="mt-4"><em>No hay aulas registradas</em></p>
 }
 else
 {
-    <p class="mt-4">Hay <strong>@_asignaturas.Count()</strong> asignaturas registradas</p>
+    <p class="mt-4">Hay <strong>@_aulas.Count()</strong> asignaturas registradas</p>
     <br />
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>Nombre</th>
-                <th>Profesor</th>
-                <th>Aula</th>
-                <th>Horario</th>
+                <th>Capacidad</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (Asignatura value in _asignaturas)
+            @foreach (Aula value in _aulas)
             {
                 <tr>
                     <td>@value!.Nombre</td>
-                    <td>@value!.Profesor?.Nombre</td>
-                    <td>@value!.Aula?.Nombre</td>
-                    <td>@value.Horario</td>
+                    <td>@value.Capacidad</td>
                     <td>
                         <button class="btn btn-sm" @onclick="()=>Editar(value.Id)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -58,33 +54,21 @@ else
 }
 
 @code {
-    private List<Asignatura?> _asignaturas = new();
+    private List<Aula?> _aulas = new();
 
     protected override async Task OnInitializedAsync()
     {
-        _asignaturas = await _repositorioasignaturas.GetAll();
+        _aulas = await _repositorioaulas.GetAll();
     }
 
-    /*
-	protected override void OnInitialized()
+    private async Task Eliminar(Aula aula)
     {
-		_asignaturas = new List<Asignatura>
-		{
-			new Asignatura { Id = 1, Nombre = "Matemáticas", Horario = "Lunes 8:00 - 10:00" },
-			new Asignatura { Id = 2, Nombre = "Historia", Horario = "Martes 10:00 - 12:00" },
-			new Asignatura { Id = 3, Nombre = "Ciencias", Horario = "Miércoles 14:00 - 16:00" }
-		};
-    }
-    */
-
-    private async Task Eliminar(Asignatura asignatura)
-    {
-        await _repositorioasignaturas.Delete(asignatura.Id);
-        _asignaturas!.Remove(asignatura);
+        await _repositorioaulas.Delete(aula.Id);
+        _aulas!.Remove(aula);
     }
 
     private void Editar(int id)
     {
-        _navigationManager.NavigateTo($"/asignatura/editar/{id}");
-    } 
-}	
+        _navigationManager.NavigateTo($"/aula/editar/{id}");
+    }
+}
