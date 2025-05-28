@@ -6,6 +6,13 @@
 <PageTitle>Profesores</PageTitle>
 <h1>Profesores</h1>
 
+@if (!string.IsNullOrWhiteSpace(mensajeError))
+{
+    <div class="alert alert-danger" role="alert">
+        @mensajeError
+    </div>
+}
+
 <a class="btn btn-success mt-4" href="profesor/nueva">Nuevo Profesor</a>
 
 @if (_profesores == null)
@@ -56,6 +63,7 @@ else
 }
 
 @code {
+    private string? mensajeError;
     private List<Profesor?> _profesores = new();
 
     protected override async Task OnInitializedAsync()
@@ -65,8 +73,16 @@ else
 
     private async Task Eliminar(Profesor profesor)
     {
+        bool sePuedeBorrar = await _repositorioprofesores.SePuedeBorrar(profesor.Id);
+
+        if (!sePuedeBorrar)
+        {
+            mensajeError = "No puedes eliminar este profesor/ esta profesora porque está asignad@ a una asignatura.";
+            return;
+        }
         await _repositorioprofesores.Delete(profesor.Id);
         _profesores!.Remove(profesor);
+        mensajeError = null;
     }
 
     private void Editar(int id)

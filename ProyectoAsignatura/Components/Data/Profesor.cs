@@ -16,7 +16,7 @@ namespace ProyectoAsignatura.Components.Data
 
         [Required(ErrorMessage = "El Teléfono es obligatorio.")]
         [Phone(ErrorMessage = "El Teléfono no es válido.")]
-        [Length(10, 10, ErrorMessage = "El Teléfono no puede exceder los 10 espacios.")]
+        [StringLength(12, ErrorMessage = "El Teléfono no puede exceder los 10 espacios.")]
         public string? Teléfono { get; set; }
 
         //Propiedad de navegación EF

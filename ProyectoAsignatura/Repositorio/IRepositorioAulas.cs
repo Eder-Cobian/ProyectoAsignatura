@@ -10,5 +10,6 @@ namespace ProyectoAsignatura.Repositorio
         Task<Aula> Add(Aula aula);
         Task Update(int id, Aula aula);
         Task Delete(int id);
+        Task<bool> SePuedeBorrar(int id);
     }
 }

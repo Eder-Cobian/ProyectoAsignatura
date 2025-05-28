@@ -55,6 +55,11 @@ namespace ProyectoAsignatura.Repositorio
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<bool> SePuedeBorrar(int id)
+        {
+            bool estaEnUso = await _context.Asignaturas.AnyAsync(a => a.ProfesorId == id);
+            return !estaEnUso;
+        }
     }
 }
 
